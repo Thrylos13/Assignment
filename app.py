@@ -40,39 +40,26 @@ def train_model():
     global dataset, model
     if dataset is None:
         return jsonify({"error": "No dataset uploaded"}), 400
-
     try:
-        # Handle missing values in the target column
+        # Handle missing values
         dataset = dataset.dropna(subset=['DefectStatus'])
-
         # Convert DefectStatus to numeric if it's categorical
         if dataset['DefectStatus'].dtype == 'object':
             dataset['DefectStatus'] = dataset['DefectStatus'].map({'Yes': 1, 'No': 0})
-
         # Feature selection
         X = dataset[['ProductionVolume', 'DefectRate', 'QualityScore', 'MaintenanceHours']]
         y = dataset['DefectStatus']
-
-        # Split the dataset into training, validation, and testing sets
+        # Split the dataset
         X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.4, random_state=100)
         X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=100)
-
-        # Model training
         model = RandomForestClassifier()
         model.fit(X_train, y_train)
-
-        # Evaluate on validation data
         y_val_pred = model.predict(X_val)
         accuracy = accuracy_score(y_val, y_val_pred)
         f1 = f1_score(y_val, y_val_pred)
-
-        # Save the model
         joblib.dump(model, 'model.pkl')
-
-        # Test the model
         y_test_pred = model.predict(X_test)
         test_accuracy = accuracy_score(y_test, y_test_pred)
-
         return jsonify({
             "accuracy": accuracy,
             "f1_score": f1,
@@ -80,27 +67,18 @@ def train_model():
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+        
 # Predict Endpoint
 @app.route('/predict', methods=['POST'])
 def predict():
-    load_model()  # Load the model once at the start of prediction
-
-    # Example input for prediction
+    load_model()
     input_data = request.get_json()
     input_df = pd.DataFrame([input_data])
-
-    # Define top features
     top_features = ["ProductionVolume", "DefectRate", "QualityScore", "MaintenanceHours"]
-
     # Ensure only top features are used
     input_data_prepared = input_df[top_features]
-
-    # Make prediction
     prediction = model.predict(input_data_prepared)
     confidence = max(model.predict_proba(input_data_prepared)[0])
-
-    # Adjusting logic for prediction based on confidence
     if confidence < 0.8:
         prediction_result = "Non-Defective"  # Confidence is low, classify as Non-Defective
     else:
@@ -108,8 +86,8 @@ def predict():
 
     return jsonify({
         "DefectStatus": prediction_result,
-        "Confidence": round(confidence * 100, 2)  # Confidence in percentage
+        "Confidence": round(confidence * 100, 2)
     })
-
+    
 if __name__ == '__main__':
     app.run(debug=True)
