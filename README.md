@@ -1,4 +1,3 @@
-```markdown
 # Product Defect Detection API
 
 This is a Flask-based API that uses a Random Forest model to predict whether a product is "Defective" or "Non-Defective" based on various input features such as Production Volume, Defect Rate, Quality Score, and Maintenance Hours.
