@@ -1,3 +1,4 @@
+```markdown
 # Product Defect Detection API
 
 This is a Flask-based API that uses a Random Forest model to predict whether a product is "Defective" or "Non-Defective" based on various input features such as Production Volume, Defect Rate, Quality Score, and Maintenance Hours.
@@ -17,28 +18,29 @@ This is a Flask-based API that uses a Random Forest model to predict whether a p
 ### Step-by-Step Setup
 
 1. **Clone the repository**:
-   
+   ```bash
    git clone https://github.com/Thrylos13/Assignment.git
    cd Assignment
-   
+   ```
 
 2. **Install dependencies**:
    Create and activate a virtual environment:
-
+   ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-
+   ```
 
    Install the required libraries:
-   
+   ```bash
    pip install -r requirements.txt
-  
+   ```
 
 3. **Run the Flask application**:
    After setting up the environment and installing dependencies, run the Flask application:
- 
+   ```bash
    python app.py
- 
+   ```
+
    This will start the server at `http://127.0.0.1:5000`.
 
 ## API Endpoints
@@ -128,4 +130,3 @@ This is a Flask-based API that uses a Random Forest model to predict whether a p
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
